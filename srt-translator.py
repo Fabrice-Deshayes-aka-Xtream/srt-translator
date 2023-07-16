@@ -2,15 +2,13 @@
 # srt-translator
 # author: Fabrice Deshayes aka Xtream
 # -----------------------------------
+import os
 import sys
 from pathlib import Path
 
 import colorama
 import deepl
 from colorama import Fore
-
-# put your deepl api key here!
-auth_key = ""
 
 # todoPath is the place where your text files which need to be translated are located
 todoPath = "batch/todo"
@@ -28,6 +26,12 @@ fileExt = "*.srt"
 # target lang for translation (source lang is automatically detected)
 targetLang = "FR"
 
+# define encoding for result files (see https://docs.python.org/3/library/codecs.html#standard-encodings)
+encoding = "utf_8_sig"
+
+# the file where is deepL apikey will be stored
+path_to_deepl_apikey = "deepl_apikey.txt"
+
 
 # function used to display a progress bar
 def progressbar(count_value, total, suffix=''):
@@ -39,13 +43,17 @@ def progressbar(count_value, total, suffix=''):
     sys.stdout.flush()
 
 
-# check that deepL api key is filled, throws error otherwise
+# load deepL apikey from file or ask it for the first time
+auth_key = ""
+if os.path.isfile(path_to_deepl_apikey):
+    with open(path_to_deepl_apikey, "r") as apikey:
+        auth_key = apikey.readlines()
+
 if len(auth_key) == 0:
-    print(
-        Fore.RED + "ERROR: you must edit srt-translator.py and put your personal deepl api key in auth_key variable".format(
-            fileExt, todoPath))
-    colorama.deinit()
-    exit(1)
+    auth_key = input("Enter your deepL api key: ")
+    with open(path_to_deepl_apikey, "w") as apikey:
+        apikey.write(auth_key)
+        apikey.close()
 
 # check that there are files to process in todoPath, throws warning otherwise
 nbFileToProcess = sum(1 for dummy in Path(todoPath).glob(fileExt))
@@ -72,7 +80,7 @@ for todo_filepath in todo_files:
 
     # translate file
     print(Fore.GREEN + "translate file [{}] to [{}]".format(todo_filepath, result_filepath))
-    with open(result_filepath, "w") as result_file:
+    with open(result_filepath, "w", encoding=encoding) as result_file:
 
         with open(todo_filepath, "rb") as f:
             nbLines = sum(1 for _ in f)

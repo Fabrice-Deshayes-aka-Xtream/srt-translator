@@ -43,25 +43,7 @@ that's all folks! this setup scrip has created a conda environment dedicated for
 
 ## Usage
 
-### only the first time
-
-as mention at the end of setup, edit srt-translator.py file to insert your deepL api key here
-
-```python
-auth_key = "<here>"
-```
-
-you can request a free deepL api key on the [deepL web-site](https://www.deepl.com/fr/pro-api?cta=header-pro-api/)
-
-You can also change the target language for translation which is FR by default
-
-```python
-targetLang = "FR"
-```
-
-### normal usage
-
-put your .srt files to translate  into the batch/todo folder
+put your .srt files to translate into the batch/todo folder
 
 using powershell on Windows terminal, go inside `srt-translator` folder and execute run script
 
@@ -70,4 +52,7 @@ cd srt-translator
 ./run.ps1
 ```
 
-After execution, processed files have be moved to batch/done folder, and the translation result files are in batch/result folder.
+you can request a free deepL api key on the [deepL web-site](https://www.deepl.com/fr/pro-api?cta=header-pro-api/)
+
+After execution, processed files have be moved to batch/done folder, and the translation result files are in
+batch/result folder.
