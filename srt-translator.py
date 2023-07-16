@@ -7,6 +7,7 @@ from pathlib import Path
 import sys
 import colorama
 from colorama import Fore
+import time
 
 # put your deepl api key here!
 auth_key = ""
@@ -38,20 +39,26 @@ def progressbar(count_value, total, suffix=''):
     sys.stdout.flush()
 
 
+# check that deepL api key is filled, throws error otherwise
 if len(auth_key) == 0:
     print(Fore.RED + "ERROR: you must edit srt-translator.py and put your personal deepl api key in auth_key variable".format(fileExt, todoPath))
     colorama.deinit()
     exit(1)
 
-# init deepl translator
-translator = deepl.Translator(auth_key)
-
-# get file to process in todoPath and WARN if no file to process
-todo_files = Path(todoPath).glob(fileExt)
-if sum(1 for dummy in Path(todoPath).glob(fileExt)) == 0:
+# check that there are files to process in todoPath, throws warning otherwise
+nbFileToProcess = sum(1 for dummy in Path(todoPath).glob(fileExt))
+if nbFileToProcess == 0:
     print(Fore.YELLOW + "WARNING: no file with extension {} present in {} folder. nothing todo".format(fileExt, todoPath))
     colorama.deinit()
     exit(0)
+
+# init deepl translator
+translator = deepl.Translator(auth_key)
+
+print(Fore.GREEN + "start to process {} files".format(nbFileToProcess))
+print()
+
+todo_files = Path(todoPath).glob(fileExt)
 
 # for each file to process
 for todo_filepath in todo_files:
@@ -72,7 +79,8 @@ for todo_filepath in todo_files:
             for line in todo_file:
                 if any(c.isalpha() for c in line):
                     # line which contain letters must be translated
-                    result_file.write(translator.translate_text(line, target_lang=targetLang).text)
+                    # result_file.write(translator.translate_text(line, target_lang=targetLang).text)
+                    time.sleep(0.1)
                 else:
                     # line which doesn't contain letters are copied as is (sequence number, time code, empty line)
                     # this help to reduce the number of characters send to deepl (free subscription is limiter to 500 000 characters per month)
@@ -86,5 +94,7 @@ for todo_filepath in todo_files:
         print(Fore.GREEN + "move [{}] to [{}]".format(todo_filepath, done_filepath))
         print()
         Path(todo_filepath).rename(done_filepath)
-        colorama.deinit()
-        exit(0)
+
+# exit program
+colorama.deinit()
+exit(0)
