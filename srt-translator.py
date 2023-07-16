@@ -47,7 +47,7 @@ def progressbar(count_value, total, suffix=''):
 auth_key = ""
 if os.path.isfile(path_to_deepl_apikey):
     with open(path_to_deepl_apikey, "r") as apikey:
-        auth_key = apikey.readlines()
+        auth_key = apikey.readlines().pop()
 
 if len(auth_key) == 0:
     auth_key = input("Enter your deepL api key: ")
