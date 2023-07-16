@@ -1,5 +1,10 @@
 # srt-translator
-batch translate subtitles srt files using deepL api
+
+> Batch translate subtitles srt files using deepL api
+
+/!\ **you must request a free or paid deepL api key on the [deepL web-site](https://www.deepl.com/fr/pro-api?cta=header-pro-api/)** /!\
+
+Developed by Fabrice Deshayes for my friend Didier Martini  
 
 ## installation
 
