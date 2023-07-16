@@ -32,23 +32,26 @@ targetLang = "FR"
 # function used to display a progress bar
 def progressbar(count_value, total, suffix=''):
     bar_length = 100
-    filled_up_length = int(round(bar_length* count_value / float(total)))
-    percentage = round(100.0 * count_value/float(total),1)
+    filled_up_length = int(round(bar_length * count_value / float(total)))
+    percentage = round(100.0 * count_value / float(total), 1)
     bar = '=' * filled_up_length + '-' * (bar_length - filled_up_length)
-    sys.stdout.write('[%s] %s%s ...%s\r' %(bar, percentage, '%', suffix))
+    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percentage, '%', suffix))
     sys.stdout.flush()
 
 
 # check that deepL api key is filled, throws error otherwise
 if len(auth_key) == 0:
-    print(Fore.RED + "ERROR: you must edit srt-translator.py and put your personal deepl api key in auth_key variable".format(fileExt, todoPath))
+    print(
+        Fore.RED + "ERROR: you must edit srt-translator.py and put your personal deepl api key in auth_key variable".format(
+            fileExt, todoPath))
     colorama.deinit()
     exit(1)
 
 # check that there are files to process in todoPath, throws warning otherwise
 nbFileToProcess = sum(1 for dummy in Path(todoPath).glob(fileExt))
 if nbFileToProcess == 0:
-    print(Fore.YELLOW + "WARNING: no file with extension {} present in {} folder. nothing todo".format(fileExt, todoPath))
+    print(
+        Fore.YELLOW + "WARNING: no file with extension {} present in {} folder. nothing todo".format(fileExt, todoPath))
     colorama.deinit()
     exit(0)
 
