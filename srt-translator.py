@@ -27,10 +27,10 @@ fileExt = "*.srt"
 targetLang = "FR"
 
 # define encoding for input files (see https://docs.python.org/3/library/codecs.html#standard-encodings)
-input_encoding = "utf_8_sig"
+input_encoding = "utf_8_sig"  # default is utf_8_sig (utf-8 with BOM)
 
 # define encoding for result files (see https://docs.python.org/3/library/codecs.html#standard-encodings)
-result_encoding = "utf_8_sig"
+result_encoding = "utf_8_sig"  # default is utf_8_sig (utf-8 with BOM)
 
 # the file where is deepL apikey will be stored
 path_to_deepl_apikey = "deepl_apikey.txt"
@@ -69,7 +69,7 @@ if nbFileToProcess == 0:
 # init deepl translator
 translator = deepl.Translator(auth_key)
 
-print(Fore.GREEN + "start to process {} files".format(nbFileToProcess))
+print(Fore.GREEN + "start to process {} file(s)".format(nbFileToProcess))
 print()
 
 todo_files = Path(todoPath).glob(fileExt)
