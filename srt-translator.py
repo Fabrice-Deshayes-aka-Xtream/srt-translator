@@ -2,12 +2,12 @@
 # srt-translator
 # author: Fabrice Deshayes aka Xtream
 # -----------------------------------
-import deepl
-from pathlib import Path
 import sys
+from pathlib import Path
+
 import colorama
+import deepl
 from colorama import Fore
-import time
 
 # put your deepl api key here!
 auth_key = ""
@@ -79,8 +79,7 @@ for todo_filepath in todo_files:
             for line in todo_file:
                 if any(c.isalpha() for c in line):
                     # line which contain letters must be translated
-                    # result_file.write(translator.translate_text(line, target_lang=targetLang).text)
-                    time.sleep(0.1)
+                    result_file.write(translator.translate_text(line, target_lang=targetLang).text)
                 else:
                     # line which doesn't contain letters are copied as is (sequence number, time code, empty line)
                     # this help to reduce the number of characters send to deepl (free subscription is limiter to 500 000 characters per month)
