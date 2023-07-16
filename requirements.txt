@@ -1,0 +1,4 @@
+deepl
+requests
+pathlib
+colorama
