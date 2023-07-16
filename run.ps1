@@ -1,4 +1,4 @@
 Write-Host "activate conda dedicated environnent" -foregroundcolor "green"
-conda activate XtrTranslator
+conda activate srt-translator
 Write-Host "execute XtrTranslator" -foregroundcolor "green"
-python XtrTranslator.py
+python srt-translator.py

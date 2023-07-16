@@ -1,3 +1,7 @@
+# -----------------------------------
+# srt-translator
+# author: Fabrice Deshayes aka Xtream
+# -----------------------------------
 import deepl
 from pathlib import Path
 import sys
@@ -35,7 +39,7 @@ def progressbar(count_value, total, suffix=''):
 
 
 if len(auth_key) == 0:
-    print(Fore.RED + "ERROR: you must edit XtrTranslator.py and put your personal deepl api key in auth_key variable".format(fileExt, todoPath))
+    print(Fore.RED + "ERROR: you must edit srt-translator.py and put your personal deepl api key in auth_key variable".format(fileExt, todoPath))
     colorama.deinit()
     exit(1)
 
