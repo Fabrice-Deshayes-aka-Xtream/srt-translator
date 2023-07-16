@@ -26,8 +26,11 @@ fileExt = "*.srt"
 # target lang for translation (source lang is automatically detected)
 targetLang = "FR"
 
+# define encoding for input files (see https://docs.python.org/3/library/codecs.html#standard-encodings)
+input_encoding = "utf_8_sig"
+
 # define encoding for result files (see https://docs.python.org/3/library/codecs.html#standard-encodings)
-encoding = "utf_8_sig"
+result_encoding = "utf_8_sig"
 
 # the file where is deepL apikey will be stored
 path_to_deepl_apikey = "deepl_apikey.txt"
@@ -80,12 +83,12 @@ for todo_filepath in todo_files:
 
     # translate file
     print(Fore.GREEN + "translate file [{}] to [{}]".format(todo_filepath, result_filepath))
-    with open(result_filepath, "w", encoding=encoding) as result_file:
+    with open(result_filepath, "w", encoding=result_encoding) as result_file:
 
         with open(todo_filepath, "rb") as f:
             nbLines = sum(1 for _ in f)
 
-        with open(todo_filepath) as todo_file:
+        with open(todo_filepath, "r", encoding=input_encoding) as todo_file:
             i = 0
             for line in todo_file:
                 if any(c.isalpha() for c in line):
