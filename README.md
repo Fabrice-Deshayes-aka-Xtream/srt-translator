@@ -61,7 +61,7 @@ targetLang = "FR"
 
 ### normal usage
 
-put your .srt files to translate  into the batch/toto folder
+put your .srt files to translate  into the batch/todo folder
 
 using powershell on Windows terminal, go inside `srt-translator` folder and execute run script
 
