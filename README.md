@@ -10,7 +10,7 @@ Developed by Fabrice Deshayes for my friend Didier Martini
 
 ### prerequisites 
 
-- miniconda
+- miniconda (conda, python, pip)
 - git
 
 You can check that all is ok by checking conda, python and git version
