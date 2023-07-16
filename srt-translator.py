@@ -72,8 +72,8 @@ if len(auth_key) == 0:
         apikey.close()
 
 # check that there are files to process in todoPath, throws warning otherwise
-nbFileToProcess = sum(1 for dummy in Path(todoPath).glob(fileExt))
-if nbFileToProcess == 0:
+nbFilesToProcess = sum(1 for dummy in Path(todoPath).glob(fileExt))
+if nbFilesToProcess == 0:
     print(
         Fore.YELLOW + "WARNING: no file with extension {} present in {} folder. nothing todo".format(fileExt, todoPath))
     colorama.deinit()
@@ -82,20 +82,22 @@ if nbFileToProcess == 0:
 # init deepl translator
 translator = deepl.Translator(auth_key)
 
-print(Fore.GREEN + "start to process {} file(s)".format(nbFileToProcess))
+print(Fore.GREEN + "start to process {} file(s)".format(nbFilesToProcess))
 print()
 
 todo_files = Path(todoPath).glob(fileExt)
 
 # for each file to process
+currentFile = 1
 for todo_filepath in todo_files:
-    # compute the result file path (same as filename as file to process with targetLang as suffix)
+    # compute the result file path (same filename as file to process with targetLang as suffix)
     result_filepath = Path(resultPath + "/" + todo_filepath.stem + "-" + targetLang + todo_filepath.suffix)
-    # compute the done file path (were file ti process will be moved after translation)
+    # compute the done file path (were file processed will be moved after translation)
     done_filepath = Path(donePath + "/" + todo_filepath.stem + todo_filepath.suffix)
 
     # translate file
-    print(Fore.GREEN + "translate file [{}] to [{}]".format(todo_filepath, result_filepath))
+    print(Fore.GREEN + "translate file {}/{} [{}] to [{}]".format(currentFile, nbFilesToProcess, todo_filepath,
+                                                                  result_filepath))
     with open(result_filepath, "w", encoding=result_encoding) as result_file:
 
         with open(todo_filepath, "rb") as f:
