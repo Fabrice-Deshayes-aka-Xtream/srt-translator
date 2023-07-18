@@ -33,7 +33,8 @@ for todo_filepath in todo_files:
                 if config.removeDeafAnnotations:
                     line = functions.clean_sentence(line)
                 nbChars += len(line)
-        print(colorama.Fore.GREEN + "File {} contains {} chars to translate".format(todo_filepath, nbChars))
+        print(colorama.Fore.GREEN + "File {} contains ".format(todo_filepath) + colorama.Fore.RED + "{}".format(
+            nbChars) + colorama.Fore.GREEN + " chars to translate")
 
 # exit program
 colorama.deinit()
