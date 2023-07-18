@@ -57,12 +57,23 @@ you can request a free deepL api key on the [deepL web-site](https://www.deepl.c
 After execution, processed files have be moved to batch/done folder, and the translation result files are in
 batch/result folder.
 
+You can also put your file in batch/planned and launch the program which counter the number of chars to translate in
+files
+
+```powershell
+cd srt-translator
+./run-count.ps1
+```
+
 ## configuration
 
-some variables can be changed on srt-translator.py file if needed:
+some variables can be changed on config.py file if needed:
 
 ```python
-# todoPath is the place where your text files which need to be translated are located
+# plannedPath is the place where your srt files planned to be processed are located to count number of chars
+plannedPath = "batch/planned"
+
+# todoPath is the place where your srt files which need to be translated are located
 todoPath = "batch/todo"
 
 # each files in todoPath will be translated using the defined targetLang and the result will be put in resultPath
@@ -86,4 +97,5 @@ result_encoding = "utf_8_sig"  # default is utf_8_sig (utf-8 with BOM)
 
 # remove deaf annotations from translated result (text inside parenthesis (...) or hooks [...])
 removeDeafAnnotations = True
+
 ```
