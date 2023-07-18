@@ -16,6 +16,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -45,6 +46,9 @@ input_encoding = "utf_8_sig"  # default is utf_8_sig (utf-8 with BOM)
 # define encoding for result files (see https://docs.python.org/3/library/codecs.html#standard-encodings)
 result_encoding = "utf_8_sig"  # default is utf_8_sig (utf-8 with BOM)
 
+# remove deaf annotations from translated result (text inside parenthesis (...) or hooks [...])
+removeDeafAnnotations = True
+
 # the file where is deepL apikey will be stored
 path_to_deepl_apikey = "deepl_apikey.txt"
 
@@ -57,6 +61,13 @@ def progressbar(count_value, total, suffix=''):
     bar = '=' * filled_up_length + '-' * (bar_length - filled_up_length)
     sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percentage, '%', suffix))
     sys.stdout.flush()
+
+
+def clean_sentence(sentence=""):
+    sentence = re.sub("(?:\(.+?\))", "", sentence)  # remove (...)
+    sentence = re.sub("(?:\[.+?\])", "", sentence)  # remove [...]
+    sentence = re.sub("\ {1,}", " ", sentence)  # replace multiple spaces by on space
+    return sentence
 
 
 # load deepL apikey from file or ask it for the first time
@@ -108,6 +119,9 @@ for todo_filepath in todo_files:
             for line in todo_file:
                 if any(c.isalpha() for c in line):
                     # line which contain letters must be translated
+                    # remove deaf annotations if asked
+                    if removeDeafAnnotations:
+                        line = clean_sentence(line)
                     result_file.write(translator.translate_text(line, target_lang=targetLang).text)
                 else:
                     # line which doesn't contain letters are copied as is (sequence number, time code, empty line)
