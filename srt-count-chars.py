@@ -38,7 +38,7 @@ for todo_filepath in todo_files:
         totalNbChars += nbChars
 
 print()
-print(colorama.Fore.LIGHTMAGENTA_EX + "total chars count for all files : {}".format(totalNbChars))
+print(colorama.Fore.LIGHTMAGENTA_EX + "total chars count for all files : " + colorama.Fore.RED + "{}".format(totalNbChars))
 
 # exit program
 colorama.deinit()
