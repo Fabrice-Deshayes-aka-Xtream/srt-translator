@@ -23,6 +23,7 @@ import config
 import functions
 
 todo_files = Path(config.plannedPath).glob(config.fileExt)
+totalNbChars = 0
 
 # for each file to process
 for todo_filepath in todo_files:
@@ -33,8 +34,11 @@ for todo_filepath in todo_files:
                 if config.removeDeafAnnotations:
                     line = functions.clean_sentence(line)
                 nbChars += len(line)
-        print(colorama.Fore.GREEN + "File {} contains ".format(todo_filepath) + colorama.Fore.RED + "{}".format(
-            nbChars) + colorama.Fore.GREEN + " chars to translate")
+        print(colorama.Fore.GREEN + "File {} contains ".format(todo_filepath) + colorama.Fore.RED + "{}".format(nbChars) + colorama.Fore.GREEN + " chars to translate")
+        totalNbChars += nbChars
+
+print()
+print(colorama.Fore.LIGHTMAGENTA_EX + "total chars count for all files : {}".format(totalNbChars))
 
 # exit program
 colorama.deinit()
