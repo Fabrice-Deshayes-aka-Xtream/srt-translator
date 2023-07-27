@@ -15,30 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-import os
 from pathlib import Path
 
 import colorama
-import deepl
 
 import config
 import functions
-
-# the file where is deepL apikey will be stored
-path_to_deepl_apikey = "deepl_apikey.txt"
-
-# load deepL apikey from file or ask it for the first time
-auth_key = ""
-
-if os.path.isfile(path_to_deepl_apikey):
-    with open(path_to_deepl_apikey, "r") as apikey:
-        auth_key = apikey.readlines().pop()
-
-if len(auth_key) == 0:
-    auth_key = input("Enter your deepL api key: ")
-    with open(path_to_deepl_apikey, "w") as apikey:
-        apikey.write(auth_key)
-        apikey.close()
+import deepl_translator
+import microsoft_translator
 
 # check that there are files to process in todoPath, throws warning otherwise
 nbFilesToProcess = sum(1 for dummy in Path(config.todoPath).glob(config.fileExt))
@@ -48,9 +32,6 @@ if nbFilesToProcess == 0:
             config.fileExt, config.todoPath))
     colorama.deinit()
     exit(0)
-
-# init deepl translator
-translator = deepl.Translator(auth_key)
 
 print(colorama.Fore.GREEN + "start to process {} file(s)".format(nbFilesToProcess))
 print()
@@ -67,8 +48,7 @@ for todo_filepath in todo_files:
     done_filepath = Path(config.donePath + "/" + todo_filepath.stem + todo_filepath.suffix)
 
     # translate file
-    print(colorama.Fore.GREEN + "translate file {}/{} [{}] to [{}]".format(currentFile, nbFilesToProcess, todo_filepath,
-                                                                           result_filepath))
+    print(colorama.Fore.GREEN + "translate file {}/{} [{}] to [{}]".format(currentFile, nbFilesToProcess, todo_filepath, result_filepath))
     with open(result_filepath, "w", encoding=config.result_encoding) as result_file:
 
         with open(todo_filepath, "rb") as f:
@@ -82,13 +62,23 @@ for todo_filepath in todo_files:
                     # remove deaf annotations if asked
                     if config.removeDeafAnnotations:
                         line = functions.clean_sentence(line)
-                    result_file.write(translator.translate_text(line, target_lang=config.targetLang).text)
+
+                    # translate line using the configured translation engine
+                    match config.translation_engine:
+                        case "deepl":
+                            translated_line = deepl_translator.translate_text(line)
+                        case "microsoft":
+                            translated_line = microsoft_translator.translate_text(line)
+
+                    # write result to file
+                    result_file.write(translated_line)
                 else:
                     # line which doesn't contain letters are copied as is (sequence number, time code, empty line)
                     # this help to reduce the number of characters send to deepl (free subscription is limiter to 500 000 characters per month)
                     result_file.write(line)
-                i += 1
+
                 # display a progress bar, it's useful specially for big file
+                i += 1
                 functions.progressbar(i, nbLines)
 
         # translation is done, move processed file to the done folder

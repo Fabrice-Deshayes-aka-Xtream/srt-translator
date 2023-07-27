@@ -1,3 +1,6 @@
+# translation engine to use, possibles values are "deepl" or "microsoft"
+translation_engine = "deepl"
+
 # plannedPath is the place where your srt files planned to be processed are located to count number of chars
 plannedPath = "batch/planned"
 
@@ -25,3 +28,8 @@ result_encoding = "utf_8_sig"  # default is utf_8_sig (utf-8 with BOM)
 
 # remove deaf annotations from translated result (text inside parenthesis (...) or hooks [...])
 removeDeafAnnotations = True
+
+# specific Microsoft Azure cloud config (if you use microsoft translation instead of deepL)
+base_url = "https://api.cognitive.microsofttranslator.com"
+endpoint = "/translate"
+region = None
