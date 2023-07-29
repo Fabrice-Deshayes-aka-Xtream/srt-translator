@@ -87,6 +87,8 @@ for todo_filepath in todo_files:
         print()
         Path(todo_filepath).rename(done_filepath)
 
+        currentFile += 1
+
 # exit program
 colorama.deinit()
 exit(0)
