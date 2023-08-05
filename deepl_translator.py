@@ -31,4 +31,5 @@ def translate_text(text_to_translate):
     if not init_done:
         init()
 
-    return translator.translate_text(text_to_translate, target_lang=config.targetLang).text
+    return translator.translate_text(text_to_translate, target_lang=config.targetLang, formality=config.formality, tag_handling=config.tag_handling,
+                                     split_sentences='nonewlines').text

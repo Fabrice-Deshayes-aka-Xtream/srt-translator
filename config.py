@@ -1,6 +1,3 @@
-# translation engine to use, possibles values are "deepl" or "microsoft"
-translation_engine = "deepl"
-
 # plannedPath is the place where your srt files planned to be processed are located to count number of chars
 plannedPath = "batch/planned"
 
@@ -26,10 +23,24 @@ input_encoding = "utf_8_sig"  # default is utf_8_sig (utf-8 with BOM)
 # define encoding for result files (see https://docs.python.org/3/library/codecs.html#standard-encodings)
 result_encoding = "utf_8_sig"  # default is utf_8_sig (utf-8 with BOM)
 
-# remove deaf annotations from translated result (text inside parenthesis (...) or hooks [...])
+# remove deaf annotations from subtitles before translation (text inside parenthesis (...) or hooks [...])
 removeDeafAnnotations = True
 
-# specific Microsoft Azure cloud config (if you use microsoft translation instead of deepL)
-base_url = "https://api.cognitive.microsofttranslator.com"
-endpoint = "/translate"
-region = None
+# remove HTML/XML tags from subtitles before translation (text like <...>)
+removeTags = True
+
+# formality possible values
+# default (default)
+# more - for a more formal language
+# less - for a more informal language
+# prefer_more - for a more formal language if available, otherwise fallback to default formality
+# prefer_less - for a more informal language if available, otherwise fallback to default formality
+formality = "prefer_more"
+
+# Sets which kind of tags should be handled. Options currently available:
+# None: dont try to translate text inside tags
+# xml: Enable XML tag handling; see [XML Handling](https://www.deepl.com/fr/docs-api/xml/).
+# html: Enable HTML tag handling; see [HTML Handling](https://www.deepl.com/fr/docs-api/html/).
+# please note that deepl tag handling is currently buggy, if start tag is not on the same line as end tag.
+# So removing tags before translation seem to produce better result than activate tag handling
+tag_handling = None
