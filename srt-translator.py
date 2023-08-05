@@ -16,79 +16,81 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 from pathlib import Path
+import datetime
 
 import colorama
 
 import config
 import functions
 import deepl_translator
-import microsoft_translator
 
-# check that there are files to process in todoPath, throws warning otherwise
-nbFilesToProcess = sum(1 for dummy in Path(config.todoPath).glob(config.fileExt))
-if nbFilesToProcess == 0:
-    print(
-        colorama.Fore.YELLOW + "WARNING: no file with extension {} present in {} folder. nothing todo".format(
-            config.fileExt, config.todoPath))
+
+def main():
+    # check that there are files to process in todoPath, throws warning otherwise
+    nb_files_to_process = sum(1 for dummy in Path(config.todoPath).glob(config.fileExt))
+    if nb_files_to_process == 0:
+        print(
+            colorama.Fore.YELLOW + "WARNING: no file with extension {} present in {} folder. nothing todo".format(config.fileExt, config.todoPath))
+        colorama.deinit()
+        exit(0)
+
+    print(colorama.Fore.GREEN + "start to process {} file(s)".format(nb_files_to_process))
+    print()
+
+    todo_files = Path(config.todoPath).glob(config.fileExt)
+
+    # for each file to process
+    current_file = 1
+    for todo_filepath in todo_files:
+        start = datetime.datetime.now()
+
+        # compute the result file path (same filename as file to process with targetLang as suffix)
+        result_filepath = Path(config.resultPath + "/" + todo_filepath.stem + "-" + config.targetLang + todo_filepath.suffix)
+        # compute the done file path (were file processed will be moved after translation)
+        done_filepath = Path(config.donePath + "/" + todo_filepath.stem + todo_filepath.suffix)
+
+        # translate file
+        print(colorama.Fore.GREEN + "translate file {}/{} [{}] to [{}]".format(current_file, nb_files_to_process, todo_filepath, result_filepath))
+        with open(result_filepath, "w", encoding=config.result_encoding) as result_file:
+            # translate in one call to preserve full context
+            translate_srt(todo_filepath, result_file)
+
+            end = datetime.datetime.now()
+            elapsed = end - start
+            print(colorama.Fore.GREEN + "file [{}] translated in {} s".format(todo_filepath, elapsed.total_seconds()))
+
+            # translation is done, move processed file to the done folder
+            print()
+            print(colorama.Fore.GREEN + "move [{}] to [{}]".format(todo_filepath, done_filepath))
+            print()
+            Path(todo_filepath).rename(done_filepath)
+
+            current_file += 1
+
+    # exit program
     colorama.deinit()
     exit(0)
 
-print(colorama.Fore.GREEN + "start to process {} file(s)".format(nbFilesToProcess))
-print()
 
-todo_files = Path(config.todoPath).glob(config.fileExt)
+def translate_srt(todo_filepath, result_file):
+    # split technical info (sequence, timecode) and subtitles text (which will be separate with a <BR/> tag by removing line feed)
+    result = functions.split_srt(todo_filepath)
 
-# for each file to process
-currentFile = 1
-for todo_filepath in todo_files:
-    # compute the result file path (same filename as file to process with targetLang as suffix)
-    result_filepath = Path(
-        config.resultPath + "/" + todo_filepath.stem + "-" + config.targetLang + todo_filepath.suffix)
-    # compute the done file path (were file processed will be moved after translation)
-    done_filepath = Path(config.donePath + "/" + todo_filepath.stem + todo_filepath.suffix)
+    # merge all subtitles items in one big string to translate it in one time to preserve context and improve translation quality and speed
+    subtitles_to_translate_as_str = ''.join(result[1])
 
-    # translate file
-    print(colorama.Fore.GREEN + "translate file {}/{} [{}] to [{}]".format(currentFile, nbFilesToProcess, todo_filepath, result_filepath))
-    with open(result_filepath, "w", encoding=config.result_encoding) as result_file:
+    # translate all subtitles with deepl
+    subtitles_translated_as_str = deepl_translator.translate_text(subtitles_to_translate_as_str)
 
-        with open(todo_filepath, "rb") as f:
-            nbLines = sum(1 for _ in f)
+    # rebuild subtitles arrays using <BR/> delimiter
+    subtitles_translated = subtitles_translated_as_str.split('<BR/>')
 
-        with open(todo_filepath, "r", encoding=config.input_encoding) as todo_file:
-            i = 0
-            for line in todo_file:
-                if any(c.isalpha() for c in line):
-                    # line which contain letters must be translated
-                    # remove deaf annotations if asked
-                    if config.removeDeafAnnotations:
-                        line = functions.clean_sentence(line)
+    # fix some punctuation anomaly caused by translation
+    subtitles_translated = functions.fix_anomaly(subtitles_translated)
 
-                    # translate line using the configured translation engine
-                    match config.translation_engine:
-                        case "deepl":
-                            translated_line = deepl_translator.translate_text(line)
-                        case "microsoft":
-                            translated_line = microsoft_translator.translate_text(line)
+    # generate translated SRT file with technical info (sequence, timecode) and translated subtitles
+    functions.merge_srt(result_file, result[0], subtitles_translated)
 
-                    # write result to file
-                    result_file.write(translated_line)
-                else:
-                    # line which doesn't contain letters are copied as is (sequence number, time code, empty line)
-                    # this help to reduce the number of characters send to deepl (free subscription is limiter to 500 000 characters per month)
-                    result_file.write(line)
 
-                # display a progress bar, it's useful specially for big file
-                i += 1
-                functions.progressbar(i, nbLines)
-
-        # translation is done, move processed file to the done folder
-        print()
-        print(colorama.Fore.GREEN + "move [{}] to [{}]".format(todo_filepath, done_filepath))
-        print()
-        Path(todo_filepath).rename(done_filepath)
-
-        currentFile += 1
-
-# exit program
-colorama.deinit()
-exit(0)
+if __name__ == "__main__":
+    main()
