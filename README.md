@@ -67,7 +67,7 @@ cd srt-translator
 
 ## configuration
 
-some variables can be changed on config.py file if needed:
+some variables can be changed on config.py file if needed. **please note that only deepl translation_engine is working. Microsoft one's has not been tested yet.**
 
 ```python
 # plannedPath is the place where your srt files planned to be processed are located to count number of chars
@@ -98,4 +98,22 @@ result_encoding = "utf_8_sig"  # default is utf_8_sig (utf-8 with BOM)
 # remove deaf annotations from translated result (text inside parenthesis (...) or hooks [...])
 removeDeafAnnotations = True
 
+# remove HTML/XML tags from subtitles before translation (text like <...>)
+removeTags = True
+
+# formality possible values
+# default (default)
+# more - for a more formal language
+# less - for a more informal language
+# prefer_more - for a more formal language if available, otherwise fallback to default formality
+# prefer_less - for a more informal language if available, otherwise fallback to default formality
+formality = "prefer_more"
+
+# Sets which kind of tags should be handled. Options currently available:
+# None: dont try to translate text inside tags
+# xml: Enable XML tag handling; see [XML Handling](https://www.deepl.com/fr/docs-api/xml/).
+# html: Enable HTML tag handling; see [HTML Handling](https://www.deepl.com/fr/docs-api/html/).
+# please note that deepl tag handling is currently buggy, if start tag is not on the same line as end tag.
+# So removing tags before translation seem to produce better result than activate tag handling
+tag_handling = None
 ```
