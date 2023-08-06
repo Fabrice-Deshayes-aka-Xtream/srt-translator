@@ -1,6 +1,9 @@
 # srt-translator
 
 > Batch translate subtitles srt files using deepL api
+> - minimise number of characters to translate by removing sequence number, timecode and can optionally remove tags and hearing impaired annotations
+> - translation is done with one big string. It preserves context by avoiding line by line translation and improve translation time.
+> - automatically fix some punctuation glitch after translation
 
 /!\ **you must request a free or paid deepL api key on the [deepL web-site](https://www.deepl.com/fr/pro-api?cta=header-pro-api/)** /!\
 
@@ -10,10 +13,10 @@ Developed by Fabrice Deshayes for my friend Didier Martini
 
 ### prerequisites 
 
-- miniconda (conda, python, pip)
+- miniconda (which install conda + python + pip)
 - git
 
-You can check that all is ok by checking conda, python and git version
+You can check that all is ok by checking conda, python, pip and git version
 ```powershell
 conda --version
 conda 23.5.2
@@ -21,9 +24,11 @@ conda 23.5.2
 python --version
 Python 3.10.12
 
+pip --version                                                                                                                                            ─╯
+pip 23.1.2 from C:\Users\fabri\scoop\apps\miniconda3\current\lib\site-packages\pip (python 3.10)
+
 git --version
 git version 2.41.0.windows.2
-
 ```
 
 ### setup
@@ -57,7 +62,7 @@ you can request a free deepL api key on the [deepL web-site](https://www.deepl.c
 After execution, processed files have be moved to batch/done folder, and the translation result files are in
 batch/result folder.
 
-You can also put your file in batch/planned and launch the program which counter the number of chars to translate in
+You can also put your file in batch/planned and launch the program which count the number of chars to translate in
 files
 
 ```powershell
