@@ -32,8 +32,8 @@ def progressbar(count_value, total, suffix=''):
 
 def clean_sentence(sentence=""):
     """
-    Cleans a given sentence by removing annotations and extra spaces.
-    The function also checks the config.removeDeafAnnotations flag to determine whether to perform the cleaning or not.
+    Cleans a given sentence by removing hearing impaired annotations and extra spaces.
+    The function also checks the config.removeHearingImpairedAnnotations flag to determine whether to perform the cleaning or not.
 
     This function takes a sentence as input and performs cleaning operations,
     such as removing annotations enclosed in parentheses or brackets, and
@@ -45,20 +45,22 @@ def clean_sentence(sentence=""):
     :rtype: str
     """
 
-    if config.removeDeafAnnotations:
+    if config.removeHearingImpairedAnnotations:
         # Remove annotations enclosed in parentheses, e.g., (...)
-        sentence = re.sub("(?:\(.+?\))", "", sentence)
+        sentence = re.sub(r'\([^)]*\)', "", sentence)
         # Remove annotations enclosed in brackets, e.g., [...]
-        sentence = re.sub("(?:\[.+?\])", "", sentence)
+        sentence = re.sub(r'|\[[^\]]*\]', "", sentence)
+        # Remove annotation enclosed in asterix, e.g., *...*
+        sentence = re.sub(r'\*.*?\*', "", sentence)
 
     if config.removeTags:
-        # Remove HTML/XML tags
+        # Remove HTML/XML tags, e.g., <...>
         sentence = re.sub(r'<[^>]*>', "", sentence)
 
     # Replace multiple consecutive spaces with a single space
     sentence = re.sub("\ {1,}", " ", sentence)
 
-    # replace line feed with BR tag
+    # replace line feed \n with <BR/> tag
     sentence = re.sub(r'\n', '<BR/>', sentence)
 
     return sentence  # Return the cleaned sentence

@@ -23,8 +23,8 @@ input_encoding = "utf_8_sig"  # default is utf_8_sig (utf-8 with BOM)
 # define encoding for result files (see https://docs.python.org/3/library/codecs.html#standard-encodings)
 result_encoding = "utf_8_sig"  # default is utf_8_sig (utf-8 with BOM)
 
-# remove deaf annotations from subtitles before translation (text inside parenthesis (...) or hooks [...])
-removeDeafAnnotations = True
+# remove hearing impaired annotations from subtitles before translation (text inside parenthesis (...), hooks [...] or asterix)
+removeHearingImpairedAnnotations = True
 
 # remove HTML/XML tags from subtitles before translation (text like <...>)
 removeTags = True
