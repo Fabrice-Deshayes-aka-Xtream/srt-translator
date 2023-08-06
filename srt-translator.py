@@ -30,11 +30,15 @@ def main():
     nb_files_to_process = sum(1 for dummy in Path(config.todoPath).glob(config.fileExt))
     if nb_files_to_process == 0:
         print(
-            colorama.Fore.YELLOW + "WARNING: no file with extension {} present in {} folder. nothing todo".format(config.fileExt, config.todoPath))
+            colorama.Fore.LIGHTRED_EX + "WARNING: no file with extension {} present in {} folder. nothing todo".format(config.fileExt, config.todoPath))
         colorama.deinit()
         exit(0)
 
-    print(colorama.Fore.GREEN + "start to process {} file(s)".format(nb_files_to_process))
+    print(
+        colorama.Fore.LIGHTWHITE_EX + "start to batch process " +
+        colorama.Fore.LIGHTGREEN_EX + "{}".format(nb_files_to_process) +
+        colorama.Fore.LIGHTWHITE_EX + " file(s)"
+    )
     print()
 
     todo_files = Path(config.todoPath).glob(config.fileExt)
@@ -50,21 +54,32 @@ def main():
         done_filepath = Path(config.donePath + "/" + todo_filepath.stem + todo_filepath.suffix)
 
         # translate file
-        print(colorama.Fore.GREEN + "translate file {}/{} [{}] to [{}]".format(current_file, nb_files_to_process, todo_filepath, result_filepath))
+        print(
+            colorama.Fore.LIGHTGREEN_EX + "{}".format(current_file) +
+            colorama.Fore.LIGHTWHITE_EX + "/" +
+            colorama.Fore.LIGHTGREEN_EX + "{}: ".format(nb_files_to_process) +
+            colorama.Fore.LIGHTWHITE_EX + "translate file " +
+            colorama.Fore.LIGHTBLUE_EX + "{}".format(todo_filepath) +
+            colorama.Fore.LIGHTWHITE_EX + " to " +
+            colorama.Fore.LIGHTBLUE_EX + "{}".format(result_filepath))
+
         with open(result_filepath, "w", encoding=config.result_encoding) as result_file:
             # translate in one call to preserve full context
             translate_srt(todo_filepath, result_file)
 
+            # translation is done, move processed file to the done folder
             end = datetime.datetime.now()
             elapsed = end - start
-            print(colorama.Fore.GREEN + "file [{}] translated in {} s".format(todo_filepath, elapsed.total_seconds()))
-
-            # translation is done, move processed file to the done folder
-            print()
-            print(colorama.Fore.GREEN + "move [{}] to [{}]".format(todo_filepath, done_filepath))
+            print(
+                colorama.Fore.LIGHTWHITE_EX + "file " +
+                colorama.Fore.LIGHTBLUE_EX + "{}".format(todo_filepath) +
+                colorama.Fore.LIGHTWHITE_EX + " translated in " +
+                colorama.Fore.LIGHTGREEN_EX + "{}".format(elapsed.total_seconds()) +
+                colorama.Fore.LIGHTWHITE_EX + " seconds and moved to " +
+                colorama.Fore.LIGHTBLUE_EX + "{}".format(done_filepath)
+            )
             print()
             Path(todo_filepath).rename(done_filepath)
-
             current_file += 1
 
     # exit program

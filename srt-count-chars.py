@@ -31,14 +31,15 @@ for todo_filepath in todo_files:
         nbChars = 0
         for line in todo_file:
             if any(c.isalpha() for c in line):
-                if config.removeDeafAnnotations:
+                if config.removeHearingImpairedAnnotations:
                     line = functions.clean_sentence(line)
                 nbChars += len(line)
-        print(colorama.Fore.GREEN + "File {} contains ".format(todo_filepath) + colorama.Fore.RED + "{}".format(nbChars) + colorama.Fore.GREEN + " chars to translate")
+        print(colorama.Fore.LIGHTWHITE_EX + "File " + colorama.Fore.LIGHTBLUE_EX + "{}".format(
+            todo_filepath) + colorama.Fore.LIGHTWHITE_EX + " contains " + colorama.Fore.LIGHTGREEN_EX + "{}".format(nbChars) + colorama.Fore.LIGHTWHITE_EX + " chars to translate")
         totalNbChars += nbChars
 
 print()
-print(colorama.Fore.LIGHTMAGENTA_EX + "total chars count for all files : " + colorama.Fore.RED + "{}".format(totalNbChars))
+print(colorama.Fore.LIGHTWHITE_EX + "Total chars count for all files : " + colorama.Fore.LIGHTGREEN_EX + "{}".format(totalNbChars))
 
 # exit program
 colorama.deinit()
