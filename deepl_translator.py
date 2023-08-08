@@ -39,11 +39,12 @@ def translate_text(text_to_translate):
 
     return translator.translate_text(
         text_to_translate,
+        source_lang=config.sourceLang,
         target_lang=config.targetLang,
         formality=config.formality,
         tag_handling=config.tag_handling,
         split_sentences='nonewlines'
-    ).text
+    )
 
 
 def get_character_usage_info():

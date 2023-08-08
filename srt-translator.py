@@ -49,9 +49,10 @@ def main():
         start = datetime.datetime.now()
 
         # compute the result file path (same filename as file to process with targetLang as suffix)
-        result_filepath = Path(config.resultPath + "/" + todo_filepath.stem + "-" + config.targetLang + todo_filepath.suffix)
-        # compute the done file path (were file processed will be moved after translation)
-        done_filepath = Path(config.donePath + "/" + todo_filepath.stem + todo_filepath.suffix)
+        if config.suffixResultWithTargetLang:
+            result_filepath = Path(config.resultPath + "/" + todo_filepath.stem + "-" + config.targetLang + todo_filepath.suffix)
+        else:
+            result_filepath = Path(config.resultPath + "/" + todo_filepath.stem + todo_filepath.suffix)
 
         # translate file
         print(
@@ -65,7 +66,13 @@ def main():
 
         with open(result_filepath, "w", encoding=config.result_encoding) as result_file:
             # translate in one call to preserve full context
-            translate_srt(todo_filepath, result_file)
+            detected_source_lang = translate_srt(todo_filepath, result_file)
+
+            # compute the done file path (were file processed will be moved after translation)
+            if config.suffixDoneFileWithDetectedLang:
+                done_filepath = Path(config.donePath + "/" + todo_filepath.stem + "-" + detected_source_lang + todo_filepath.suffix)
+            else:
+                done_filepath = Path(config.donePath + "/" + todo_filepath.stem + todo_filepath.suffix)
 
             # translation is done, move processed file to the done folder
             end = datetime.datetime.now()
@@ -101,7 +108,8 @@ def translate_srt(todo_filepath, result_file):
     subtitles_to_translate_as_str = ''.join(result[1])
 
     # translate all subtitles with deepl
-    subtitles_translated_as_str = deepl_translator.translate_text(subtitles_to_translate_as_str)
+    translate_result = deepl_translator.translate_text(subtitles_to_translate_as_str)
+    subtitles_translated_as_str = translate_result.text
 
     # rebuild subtitles arrays using <BR/> delimiter
     subtitles_translated = subtitles_translated_as_str.split('<BR/>')
@@ -111,6 +119,8 @@ def translate_srt(todo_filepath, result_file):
 
     # generate translated SRT file with technical info (sequence, timecode) and translated subtitles
     functions.merge_srt(result_file, result[0], subtitles_translated)
+
+    return translate_result.detected_source_lang
 
 
 if __name__ == "__main__":

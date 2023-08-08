@@ -91,8 +91,17 @@ donePath = "batch/done"
 # process only files with this extension
 fileExt = "*.srt"
 
+# source lang of file to translate (keep None for automatic lang detection)
+sourceLang = None
+
 # target lang for translation (source lang is automatically detected)
 targetLang = "FR"
+
+# rename file in todopath with origin lang suffixed (detected or forced)
+suffixDoneFileWithDetectedLang = True
+
+# rename file translated with target lang suffixed
+suffixResultWithTargetLang = False
 
 # define encoding for input files (see https://docs.python.org/3/library/codecs.html#standard-encodings)
 input_encoding = "utf_8_sig"  # default is utf_8_sig (utf-8 with BOM)
