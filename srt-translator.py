@@ -111,8 +111,8 @@ def translate_srt(todo_filepath, result_file):
     translate_result = deepl_translator.translate_text(subtitles_to_translate_as_str)
     subtitles_translated_as_str = translate_result.text
 
-    # rebuild subtitles arrays using <BR/> delimiter
-    subtitles_translated = subtitles_translated_as_str.split('<BR/>')
+    # rebuild subtitles arrays using functions.subtitle_separator delimiter
+    subtitles_translated = subtitles_translated_as_str.split(functions.subtitle_separator)
 
     # fix some punctuation anomaly caused by translation
     subtitles_translated = functions.fix_anomaly(subtitles_translated)

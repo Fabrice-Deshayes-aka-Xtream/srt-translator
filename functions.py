@@ -2,6 +2,8 @@ import re
 import sys
 import config
 
+subtitle_separator = "||"
+
 
 def progressbar(count_value, total, suffix=''):
     """
@@ -60,8 +62,11 @@ def clean_sentence(sentence=""):
     # Replace multiple consecutive spaces with a single space
     sentence = re.sub("\ {1,}", " ", sentence)
 
-    # replace line feed \n with <BR/> tag
-    sentence = re.sub(r'\n', '<BR/>', sentence)
+    # Remove subtitle_separator in subtitles as we used it as separator
+    # sentence = sentence.replace(subtitle_separator, '')
+
+    # replace line feed \n with subtitle_separator tag
+    sentence = re.sub(r'\n', subtitle_separator, sentence)
 
     return sentence  # Return the cleaned sentence
 
@@ -104,7 +109,7 @@ def split_srt(srt_file):
                 current_index += 1  # Move the index forward
 
             current_index += 1  # Move the index forward to skip the empty line between subtitles
-            subtitles.append('<BR/>')  # Append an empty string to indicate the end of this subtitle
+            subtitles.append(subtitle_separator)  # Append an empty string to indicate the end of this subtitle
 
     return technical_info, subtitles  # Return the collected technical info and cleaned subtitles
 
