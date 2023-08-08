@@ -44,3 +44,7 @@ def translate_text(text_to_translate):
         tag_handling=config.tag_handling,
         split_sentences='nonewlines'
     ).text
+
+
+def get_character_usage_info():
+    return translator.get_usage().character

@@ -82,6 +82,12 @@ def main():
             Path(todo_filepath).rename(done_filepath)
             current_file += 1
 
+    usage = deepl_translator.get_character_usage_info()
+    print(
+        colorama.Fore.LIGHTGREEN_EX + "{}".format(usage.limit - usage.count) +
+        colorama.Fore.LIGHTWHITE_EX + " characters left on you deepl subscription for this billing period"
+    )
+
     # exit program
     colorama.deinit()
     exit(0)
