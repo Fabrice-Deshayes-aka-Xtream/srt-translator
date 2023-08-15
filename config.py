@@ -44,12 +44,4 @@ removeTags = True
 # less - for a more informal language
 # prefer_more - for a more formal language if available, otherwise fallback to default formality
 # prefer_less - for a more informal language if available, otherwise fallback to default formality
-formality = "prefer_more"
-
-# Sets which kind of tags should be handled. Options currently available:
-# None: dont try to translate text inside tags
-# xml: Enable XML tag handling; see [XML Handling](https://www.deepl.com/fr/docs-api/xml/).
-# html: Enable HTML tag handling; see [HTML Handling](https://www.deepl.com/fr/docs-api/html/).
-# please note that deepl tag handling is currently buggy, if start tag is not on the same line as end tag.
-# So removing tags before translation seem to produce better result than activate tag handling
-tag_handling = None
+formality = "prefer_less"
