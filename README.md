@@ -1,8 +1,9 @@
 # srt-translator
 
 > Batch translate subtitles srt files using deepL api
-> - minimise number of characters to translate by removing sequence number, timecode and can optionally remove tags and hearing impaired annotations
-> - translation is done with one big string. It preserves context by avoiding line by line translation and improve translation time.
+> - minimise number of characters to translate by removing sequence number, timecode and can optionally remove HTML tags and hearing impaired annotations
+> - translation is done on concatenated packet of subtitles (1000 lines). It preserves context by avoiding line by line translation, improve translation execution time and avoid
+    exceeding deepl text length limit
 > - automatically fix some punctuation glitch after translation
 
 /!\ **you must request a free or paid deepL api key on the [deepL web-site](https://www.deepl.com/fr/pro-api?cta=header-pro-api/)** /!\
@@ -121,13 +122,5 @@ removeTags = True
 # less - for a more informal language
 # prefer_more - for a more formal language if available, otherwise fallback to default formality
 # prefer_less - for a more informal language if available, otherwise fallback to default formality
-formality = "prefer_more"
-
-# Sets which kind of tags should be handled. Options currently available:
-# None: dont try to translate text inside tags
-# xml: Enable XML tag handling; see [XML Handling](https://www.deepl.com/fr/docs-api/xml/).
-# html: Enable HTML tag handling; see [HTML Handling](https://www.deepl.com/fr/docs-api/html/).
-# please note that deepl tag handling is currently buggy, if start tag is not on the same line as end tag.
-# So removing tags before translation seem to produce better result than activate tag handling
-tag_handling = None
+formality = "prefer_less"
 ```
