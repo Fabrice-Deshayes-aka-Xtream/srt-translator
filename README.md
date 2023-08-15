@@ -39,19 +39,22 @@ clone project somewhere on you disk
 git clone https://github.com/Fabrice-Deshayes-aka-Xtream/srt-translator.git
 ```
 
-using powershell on Windows terminal, go inside `srt-translator` folder and execute setup script
+using powershell on Windows terminal, go inside `srt-translator` folder and execute `setup.ps1` script.
+you can also right-click "execute with powershell".
 ```powershell
 cd srt-translator
 ./setup.ps1
 ```
 
-that's all folks! this setup scrip has created a conda environment dedicated for this project and install all required libraries using pip. No need to activate the environment, it will be done automatically by using the run script.
+that's all folks! this setup script has created a dedicated conda environment for this project and install all required libraries using pip. No need to activate the environment, it
+will be done automatically by using the run script.
 
 ## usage
 
 put your .srt files to translate into the batch/todo folder
 
-using powershell on Windows terminal, go inside `srt-translator` folder and execute run script
+using powershell on Windows terminal, go inside `srt-translator` folder and execute `run.ps1` script.
+you can also right-click "execute with powershell".
 
 ```powershell
 cd srt-translator
