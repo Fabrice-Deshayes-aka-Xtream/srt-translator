@@ -66,7 +66,7 @@ def main():
 
         with open(result_filepath, "w", encoding=config.result_encoding) as result_file:
             # translate in one call to preserve full context
-            detected_source_lang = translate_srt(todo_filepath, result_file)
+            detected_source_lang = translate_srt_in_packets(todo_filepath, result_file)
 
             # compute the done file path (were file processed will be moved after translation)
             if config.suffixDoneFileWithDetectedLang:
@@ -100,16 +100,30 @@ def main():
     exit(0)
 
 
-def translate_srt(todo_filepath, result_file):
-    # split technical info (sequence, timecode) and subtitles text (which will be separate with a <BR/> tag by removing line feed)
+def translate_srt_in_packets(todo_filepath, result_file):
+    # split technical info (sequence, timecode) and subtitles text
     result = functions.split_srt(todo_filepath)
 
-    # merge all subtitles items in one big string to translate it in one time to preserve context and improve translation quality and speed
-    subtitles_to_translate_as_str = ''.join(result[1])
+    nb_subtitles = len(result[1])
+    current_index_subtitle = 0
+    subtitles_translated_as_str = ""
 
-    # translate all subtitles with deepl
+    # subtitles are concatenate, removing line feed to preserve context and translate by packet (to not reach deepl limit per api call)
+    # functions.subtitle_separator is used to keep sequence and subtitle line separation, mandatory to rebuild the final SRT file
+    while current_index_subtitle + functions.packets_size < nb_subtitles:
+        # merge subtitles items by packets_size
+        subtitles_to_translate_as_str = ''.join(result[1][current_index_subtitle:current_index_subtitle + functions.packets_size])
+
+        # translate subtitles packet with deepl
+        translate_result = deepl_translator.translate_text(subtitles_to_translate_as_str)
+        subtitles_translated_as_str += translate_result.text
+
+        current_index_subtitle += functions.packets_size
+
+    # process the last packet
+    subtitles_to_translate_as_str = ''.join(result[1][current_index_subtitle:])
     translate_result = deepl_translator.translate_text(subtitles_to_translate_as_str)
-    subtitles_translated_as_str = translate_result.text
+    subtitles_translated_as_str += translate_result.text
 
     # rebuild subtitles arrays using functions.subtitle_separator delimiter
     subtitles_translated = subtitles_translated_as_str.split(functions.subtitle_separator)
