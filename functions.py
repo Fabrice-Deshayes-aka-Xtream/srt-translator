@@ -2,7 +2,8 @@ import re
 import sys
 import config
 
-subtitle_separator = "||"
+subtitle_separator = "<XTR/>"
+packets_size = 1000
 
 
 def progressbar(count_value, total, suffix=''):
@@ -160,12 +161,12 @@ def fix_anomaly(subtitles):
 
     for line in subtitles:
         # fix line which start with a '.'' (we should be on previous line)
-        if i > 0 and line.startswith('.'):
+        if i > 0 and line.startswith('.') and subtitles[i - 1] != '':
             subtitles[i - 1] = subtitles[i - 1] + '.'
             subtitles[i] = line.lstrip('.')
 
         # fix line which start with a ':' (we should be on previous line)
-        if i > 0 and line.startswith(':'):
+        if i > 0 and line.startswith(':') and subtitles[i - 1] != '':
             subtitles[i - 1] = subtitles[i - 1] + ' :'
             subtitles[i] = line.lstrip(':')
 
