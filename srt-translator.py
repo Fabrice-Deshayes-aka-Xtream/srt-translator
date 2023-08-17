@@ -50,7 +50,7 @@ def main():
 
         # compute the result file path (same filename as file to process with targetLang as suffix)
         if config.suffixResultWithTargetLang:
-            result_filepath = Path(config.resultPath + "/" + todo_filepath.stem + "-" + config.targetLang + todo_filepath.suffix)
+            result_filepath = Path(config.resultPath + "/" + todo_filepath.stem + "_" + config.targetLang + todo_filepath.suffix)
         else:
             result_filepath = Path(config.resultPath + "/" + todo_filepath.stem + todo_filepath.suffix)
 
@@ -70,7 +70,7 @@ def main():
 
             # compute the done file path (were file processed will be moved after translation)
             if config.suffixDoneFileWithDetectedLang:
-                done_filepath = Path(config.donePath + "/" + todo_filepath.stem + "-" + detected_source_lang + todo_filepath.suffix)
+                done_filepath = Path(config.donePath + "/" + todo_filepath.stem + "_" + detected_source_lang + todo_filepath.suffix)
             else:
                 done_filepath = Path(config.donePath + "/" + todo_filepath.stem + todo_filepath.suffix)
 
