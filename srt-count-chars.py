@@ -27,16 +27,12 @@ totalNbChars = 0
 
 # for each file to process
 for todo_filepath in todo_files:
-    with open(todo_filepath, "r", encoding=config.input_encoding) as todo_file:
-        nbChars = 0
-        for line in todo_file:
-            if any(c.isalpha() for c in line):
-                if config.removeHearingImpairedAnnotations:
-                    line = functions.clean_sentence(line)
-                nbChars += len(line)
-        print(colorama.Fore.LIGHTWHITE_EX + "File " + colorama.Fore.LIGHTBLUE_EX + "{}".format(
-            todo_filepath) + colorama.Fore.LIGHTWHITE_EX + " contains " + colorama.Fore.LIGHTGREEN_EX + "{}".format(nbChars) + colorama.Fore.LIGHTWHITE_EX + " chars to translate")
-        totalNbChars += nbChars
+    nbChars = functions.count_chars_to_translate(todo_filepath)
+    print(
+        colorama.Fore.LIGHTWHITE_EX + "File " + colorama.Fore.LIGHTBLUE_EX + "{}".format(todo_filepath) +
+        colorama.Fore.LIGHTWHITE_EX + " contains " + colorama.Fore.LIGHTGREEN_EX + "{}".format(nbChars) + colorama.Fore.LIGHTWHITE_EX + " chars to translate"
+    )
+    totalNbChars += nbChars
 
 print()
 print(colorama.Fore.LIGHTWHITE_EX + "Total chars count for all files : " + colorama.Fore.LIGHTGREEN_EX + "{}".format(totalNbChars))

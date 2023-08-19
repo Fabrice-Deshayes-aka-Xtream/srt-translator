@@ -176,3 +176,14 @@ def fix_anomaly(subtitles):
     subtitles = [re.sub("\ {1,}", " ", s) for s in subtitles]  # replace many space by one space
 
     return subtitles
+
+
+def count_chars_to_translate(filepath):
+    with open(filepath, "r", encoding=config.input_encoding) as file:
+        nbChars = 0
+        for line in file:
+            if any(c.isalpha() for c in line):
+                if config.removeHearingImpairedAnnotations:
+                    line = clean_sentence(line)
+                nbChars += len(line)
+    return nbChars

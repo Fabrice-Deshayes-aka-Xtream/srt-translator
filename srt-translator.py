@@ -48,6 +48,21 @@ def main():
     for todo_filepath in todo_files:
         start = datetime.datetime.now()
 
+        nb_chars_to_translate = functions.count_chars_to_translate(todo_filepath)
+        nb_chars_left_on_deepl_account = deepl_translator.get_character_usage_info().count
+
+        if nb_chars_to_translate > nb_chars_left_on_deepl_account:
+            print(
+                colorama.Fore.LIGHTRED_EX + "Skip file" +
+                colorama.Fore.LIGHTBLUE_EX + "{}".format(todo_filepath) +
+                colorama.Fore.LIGHTWHITE_EX + " because theres is not enough credits left on deepl account. Need " +
+                colorama.Fore.LIGHTGREEN_EX + "{}".format(nb_chars_to_translate) +
+                colorama.Fore.LIGHTWHITE_EX + " but only " +
+                colorama.Fore.LIGHTGREEN_EX + "{}".format(nb_chars_left_on_deepl_account) +
+                colorama.Fore.LIGHTWHITE_EX + " left."
+            )
+            continue
+
         # compute the result file path (same filename as file to process with targetLang as suffix)
         if config.suffixResultWithTargetLang:
             result_filepath = Path(config.resultPath + "/" + todo_filepath.stem + "_" + config.targetLang + todo_filepath.suffix)
@@ -62,7 +77,11 @@ def main():
             colorama.Fore.LIGHTWHITE_EX + "translate file " +
             colorama.Fore.LIGHTBLUE_EX + "{}".format(todo_filepath) +
             colorama.Fore.LIGHTWHITE_EX + " to " +
-            colorama.Fore.LIGHTBLUE_EX + "{}".format(result_filepath))
+            colorama.Fore.LIGHTBLUE_EX + "{}".format(result_filepath) +
+            colorama.Fore.LIGHTWHITE_EX + " (" +
+            colorama.Fore.LIGHTGREEN_EX + "{}".format(nb_chars_to_translate) +
+            colorama.Fore.LIGHTWHITE_EX + " characters)"
+        )
 
         with open(result_filepath, "w", encoding=config.result_encoding) as result_file:
             # translate in one call to preserve full context
@@ -89,9 +108,9 @@ def main():
             Path(todo_filepath).rename(done_filepath)
             current_file += 1
 
-    usage = deepl_translator.get_character_usage_info()
+    apikey_infos = deepl_translator.get_best_api_key()
     print(
-        colorama.Fore.LIGHTGREEN_EX + "{}".format(usage.limit - usage.count) +
+        colorama.Fore.LIGHTGREEN_EX + "{}".format(apikey_infos[1]) +
         colorama.Fore.LIGHTWHITE_EX + " characters left on you deepl subscription for this billing period"
     )
 

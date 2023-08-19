@@ -2,69 +2,66 @@ import config
 import os
 import deepl
 
-translator = None
-init_done = False
 path_to_deepl_apikey = "deepl_apikey.txt"
 
 
 def get_character_usage_info(apikey=None):
-    if apikey is None:
-        return translator.get_usage().character
-    else:
-        t = deepl.Translator(apikey)
-        return t.get_usage().character
+    translator = init_translator(apikey)
+    return translator.get_usage().character
 
 
-def get_api_key():
-    auth_key = None
+def get_best_api_key():
+    apikey = None
     max_remain_chars = 0
+    total_remain_chars = 0
 
     if os.path.isfile(path_to_deepl_apikey):
         with open(path_to_deepl_apikey, "r") as apikey_file:
             apikeys = apikey_file.readlines()
-            for apikey in apikeys:
-                apikey = apikey.strip()
-                if apikey.startswith("#") or len(apikey) == 0:
+            for current_apikey in apikeys:
+                current_apikey = current_apikey.strip()
+                if current_apikey.startswith("#") or len(current_apikey) == 0:
                     continue
 
-                usage = get_character_usage_info(apikey)
+                usage = get_character_usage_info(current_apikey)
                 remain_chars = usage.limit - usage.count
-                print("apikey {} is allowed to translate {} chars".format(apikey, remain_chars))
-                if remain_chars > max_remain_chars:
-                    auth_key = apikey
+                total_remain_chars += remain_chars
+                if remain_chars > 0 and remain_chars > max_remain_chars:
+                    apikey = current_apikey
                     max_remain_chars = remain_chars
 
-                print("will finally used {} as it's the more loaded ones".format(auth_key))
-
-    return auth_key
+    return apikey, total_remain_chars
 
 
 def ask_and_store_api_key():
-    auth_key = input("Enter your deepL api key: ")
+    apikey = input("Enter your deepL api key: ")
+    file_already_exist = os.path.isfile(path_to_deepl_apikey)
     with open(path_to_deepl_apikey, "a") as apikey_file:
-        apikey_file.write('\n' + auth_key)
+        if file_already_exist:
+            apikey_file.write('\n' + apikey)
+        else:
+            apikey_file.write(apikey)
         apikey_file.close()
 
-    return auth_key
+    return apikey
 
 
-def init():
-    global init_done
-    global translator
+def init_translator(apikey=None):
+    if apikey is None:
+        # get api key from path_to_deepl_apikey file (choose the one with the most remaining chars allowed)
+        apikey_infos = get_best_api_key()
+        apikey = apikey_infos[0]
 
-    auth_key = get_api_key()
-
-    if auth_key is None:
-        auth_key = ask_and_store_api_key()
+        # if there's no key configured or valid, ask a new one
+        if apikey is None:
+            apikey = ask_and_store_api_key()
 
     # init deepl translator
-    translator = deepl.Translator(auth_key)
-    init_done = True
+    return deepl.Translator(apikey)
 
 
 def translate_text(text_to_translate):
-    if not init_done:
-        init()
+    translator = init_translator()
 
     return translator.translate_text(
         text_to_translate,
