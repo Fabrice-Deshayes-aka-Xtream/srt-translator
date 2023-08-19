@@ -97,7 +97,7 @@ def main():
             end = datetime.datetime.now()
             elapsed = end - start
             print(
-                colorama.Fore.LIGHTWHITE_EX + "file " +
+                colorama.Fore.LIGHTWHITE_EX + "\nfile " +
                 colorama.Fore.LIGHTBLUE_EX + "{}".format(todo_filepath) +
                 colorama.Fore.LIGHTWHITE_EX + " translated in " +
                 colorama.Fore.LIGHTGREEN_EX + "{}".format(elapsed.total_seconds()) +
@@ -130,6 +130,8 @@ def translate_srt_in_packets(todo_filepath, result_file):
     # subtitles are concatenate, removing line feed to preserve context and translate by packet (to not reach deepl limit per api call)
     # functions.subtitle_separator is used to keep sequence and subtitle line separation, mandatory to rebuild the final SRT file
     while current_index_subtitle + functions.packets_size < nb_subtitles:
+        functions.progressbar(current_index_subtitle, nb_subtitles)
+
         # merge subtitles items by packets_size
         subtitles_to_translate_as_str = ''.join(result[1][current_index_subtitle:current_index_subtitle + functions.packets_size])
 
@@ -140,9 +142,11 @@ def translate_srt_in_packets(todo_filepath, result_file):
         current_index_subtitle += functions.packets_size
 
     # process the last packet
+    functions.progressbar(current_index_subtitle, nb_subtitles)
     subtitles_to_translate_as_str = ''.join(result[1][current_index_subtitle:])
     translate_result = deepl_translator.translate_text(subtitles_to_translate_as_str)
     subtitles_translated_as_str += translate_result.text
+    functions.progressbar(nb_subtitles, nb_subtitles)  # 100%
 
     # rebuild subtitles arrays using functions.subtitle_separator delimiter
     subtitles_translated = subtitles_translated_as_str.split(functions.subtitle_separator)

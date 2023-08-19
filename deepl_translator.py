@@ -1,3 +1,5 @@
+import time
+
 import config
 import os
 import deepl
@@ -62,6 +64,10 @@ def init_translator(apikey=None):
 
 def translate_text(text_to_translate):
     translator = init_translator()
+
+    # un comment for tests
+    # text_to_translate = "1"
+    # time.sleep(2)
 
     return translator.translate_text(
         text_to_translate,
