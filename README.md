@@ -43,7 +43,7 @@ using powershell on Windows terminal, go inside `srt-translator` folder and exec
 you can also right-click "execute with powershell".
 ```powershell
 cd srt-translator
-./setup.ps1
+.\setup.ps1
 ```
 
 that's all folks! this setup script has created a dedicated conda environment for this project and install all required libraries using pip. No need to activate the environment, it
@@ -58,7 +58,7 @@ you can also right-click "execute with powershell".
 
 ```powershell
 cd srt-translator
-./run.ps1
+.\run.ps1
 ```
 
 Example of execution output
@@ -75,7 +75,7 @@ files
 
 ```powershell
 cd srt-translator
-./run-count.ps1
+.\run-count.ps1
 ```
 
 ## configuration
