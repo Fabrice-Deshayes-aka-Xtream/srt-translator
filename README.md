@@ -63,7 +63,7 @@ cd srt-translator
 
 Example of execution output
 
-![image](https://github.com/Fabrice-Deshayes-aka-Xtream/srt-translator/assets/7294270/2f36d9da-b3c9-4397-9f5d-bc4f7eba9b7c)
+![image](https://github.com/Fabrice-Deshayes-aka-Xtream/srt-translator/assets/7294270/9bde7cc6-9486-4f86-8c23-42db54adda8d)
 
 you can request a free deepL api key on the [deepL web-site](https://www.deepl.com/fr/pro-api?cta=header-pro-api/)
 
