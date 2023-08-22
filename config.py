@@ -5,10 +5,10 @@ plannedPath = "batch/planned"
 todoPath = "batch/todo"
 
 # each files in todoPath will be translated using the defined targetLang and the result will be put in resultPath
-# result files have the same name as input file with targetLang suffix
 resultPath = "batch/result"
 
 # files found in todoPath are moved to donePath after translation
+# done files have the same name as input file with sourceLang suffix
 donePath = "batch/done"
 
 # process only files with this extension
