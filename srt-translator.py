@@ -49,7 +49,8 @@ def main():
         start = datetime.datetime.now()
 
         nb_chars_to_translate = functions.count_chars_to_translate(todo_filepath)
-        nb_chars_left_on_deepl_account = deepl_translator.get_character_usage_info().count
+        account_chars_stats = deepl_translator.get_character_usage_info()
+        nb_chars_left_on_deepl_account = account_chars_stats.limit - account_chars_stats.count
 
         if nb_chars_to_translate > nb_chars_left_on_deepl_account:
             print(
