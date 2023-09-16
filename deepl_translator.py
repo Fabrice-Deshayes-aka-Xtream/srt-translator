@@ -32,7 +32,7 @@ def get_best_api_key():
                     apikey = current_apikey
                     max_remain_chars = remain_chars
 
-    return apikey, total_remain_chars
+    return apikey, remain_chars, total_remain_chars
 
 
 def ask_and_store_api_key():
