@@ -75,8 +75,8 @@ def translate_text(text_to_translate):
     translator = init_translator()
 
     # uncomment for tests
-    text_to_translate = "1"
-    time.sleep(2)
+    # text_to_translate = "1"
+    # time.sleep(2)
 
     return translator.translate_text(
         text_to_translate,
