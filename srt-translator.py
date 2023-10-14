@@ -109,11 +109,7 @@ def main():
             Path(todo_filepath).rename(done_filepath)
             current_file += 1
 
-    apikey_infos = deepl_translator.get_best_api_key()
-    print(
-        colorama.Fore.LIGHTGREEN_EX + "{}".format(apikey_infos[1]) +
-        colorama.Fore.LIGHTWHITE_EX + " characters left on you deepl subscription for this billing period"
-    )
+    deepl_translator.get_best_api_key(True)
 
     # exit program
     colorama.deinit()
