@@ -21,6 +21,7 @@ import colorama
 
 import config
 import functions
+import deepl_translator
 
 todo_files = Path(config.plannedPath).glob(config.fileExt)
 totalNbChars = 0
@@ -36,6 +37,10 @@ for todo_filepath in todo_files:
 
 print()
 print(colorama.Fore.LIGHTWHITE_EX + "Total chars count for all files : " + colorama.Fore.LIGHTGREEN_EX + "{}".format(totalNbChars))
+
+print()
+apikey, remain_chars, total_remain_chars = deepl_translator.get_best_api_key(True)
+print(colorama.Fore.LIGHTGREEN_EX + "{}".format(total_remain_chars) + colorama.Fore.LIGHTWHITE_EX + " cumulated characters left for all apiKeys")
 
 # exit program
 colorama.deinit()
