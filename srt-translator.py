@@ -52,9 +52,17 @@ def main():
         account_chars_stats = deepl_translator.get_character_usage_info()
         nb_chars_left_on_deepl_account = account_chars_stats.limit - account_chars_stats.count
 
+        if nb_chars_to_translate == 0:
+            print(
+                colorama.Fore.LIGHTRED_EX + "Skip file " +
+                colorama.Fore.LIGHTBLUE_EX + "{}".format(todo_filepath) +
+                colorama.Fore.LIGHTWHITE_EX + " because it's an empty file "
+            )
+            continue
+
         if nb_chars_to_translate > nb_chars_left_on_deepl_account:
             print(
-                colorama.Fore.LIGHTRED_EX + "Skip file" +
+                colorama.Fore.LIGHTRED_EX + "Skip file " +
                 colorama.Fore.LIGHTBLUE_EX + "{}".format(todo_filepath) +
                 colorama.Fore.LIGHTWHITE_EX + " because theres is not enough credits left on deepl account. Need " +
                 colorama.Fore.LIGHTGREEN_EX + "{}".format(nb_chars_to_translate) +
