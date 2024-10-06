@@ -1,3 +1,8 @@
 /.idea/
 /XtreamTranslator.iml
 /deepl_apikey.txt
+/batch/done/*.srt
+/batch/planned/*.srt
+/batch/result/*.srt
+/batch/todo/*.srt
+
