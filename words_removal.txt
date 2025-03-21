@@ -1,0 +1,1 @@
+# insert in this file the sentences/words that you want to remove from original file before translation. one sentence/word per line, case-insensitive. empty lines or starting with # are ignored.

@@ -11,6 +11,9 @@ resultPath = "batch/result"
 # done files have the same name as input file with sourceLang suffix
 donePath = "batch/done"
 
+# name and path of words removal file
+words_removal_file_path = "words_removal.txt"
+
 # process only files with this extension
 fileExt = "*.srt"
 

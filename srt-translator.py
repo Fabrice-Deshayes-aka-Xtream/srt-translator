@@ -60,6 +60,10 @@ def main():
             )
             continue
 
+        # preprocess file to translate by removing some sentences/words based on words_removal.txt file
+        functions.clean_srt(todo_filepath)
+        nb_chars_to_translate = functions.count_chars_to_translate(todo_filepath)
+
         if nb_chars_to_translate > nb_chars_left_on_deepl_account:
             print(
                 colorama.Fore.LIGHTRED_EX + "Skip file " +

@@ -61,7 +61,7 @@ def clean_sentence(sentence=""):
         sentence = re.sub(r'<[^>]*>', "", sentence)
 
     # Replace multiple consecutive spaces with a single space
-    sentence = re.sub("\ {1,}", " ", sentence)
+    sentence = re.sub(" {1,}", " ", sentence)
 
     # Remove subtitle_separator in subtitles as we used it as separator
     # sentence = sentence.replace(subtitle_separator, '')
@@ -70,6 +70,30 @@ def clean_sentence(sentence=""):
     sentence = re.sub(r'\n', subtitle_separator, sentence)
 
     return sentence  # Return the cleaned sentence
+
+
+def clean_srt(srt_file: str):
+    """
+    remove from a srt text file some words/sentences found in words_removal.txt file
+
+    :param srt_file: The path to the input SRT file.
+    """
+    # load word/sentences to remove
+    with open(config.words_removal_file_path, 'r', encoding='utf-8') as f:
+        words_to_remove = [line.strip() for line in f if line.strip() and not line.startswith('#') and not line == ""]
+
+    # build a case-insensitive pattern for matching words/sentences to remove
+    words_pattern = re.compile(r'\b(?:' + '|'.join(map(re.escape, words_to_remove)) + r')\b', re.IGNORECASE)
+
+    # clean srt
+    with open(srt_file, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    cleaned_content = words_pattern.sub('', content)  # Suppression des mots
+
+    # save clean srt
+    with open(srt_file, 'w', encoding='utf-8') as f:
+        f.write(cleaned_content)
 
 
 def split_srt(srt_file):
@@ -173,7 +197,7 @@ def fix_anomaly(subtitles):
         i += 1
 
     subtitles = [s.strip() for s in subtitles]  # remove trailing space on each subtitle line
-    subtitles = [re.sub("\ {1,}", " ", s) for s in subtitles]  # replace many space by one space
+    subtitles = [re.sub(" {1,}", " ", s) for s in subtitles]  # replace many space by one space
 
     return subtitles
 

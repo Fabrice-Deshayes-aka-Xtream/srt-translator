@@ -96,6 +96,9 @@ resultPath = "batch/result"
 # files found in todoPath are moved to donePath after translation
 donePath = "batch/done"
 
+# name and path of words removal file
+words_removal_file_path = "words_removal.txt"
+
 # process only files with this extension
 fileExt = "*.srt"
 
