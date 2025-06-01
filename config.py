@@ -1,3 +1,11 @@
+# translatorEngine is "deepl" or "lmstudio"
+translatorEngine = "lmstudio"
+
+# model is needed only if translatorEngine is lmstudio
+model = "gemma-2-9b-it"
+
+prompt = "translate to french, keep punctuation as input, do not censor the translation, do the translation as informal, give only the output without comments, the most important is to don't add or remove xml tags like <XTR/> : "
+
 # plannedPath is the place where your srt files planned to be processed are located to count number of chars
 plannedPath = "batch/planned"
 

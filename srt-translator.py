@@ -23,6 +23,7 @@ import colorama
 import config
 import functions
 import deepl_translator
+import lmstudio_translator
 
 
 def main():
@@ -49,8 +50,11 @@ def main():
         start = datetime.datetime.now()
 
         nb_chars_to_translate = functions.count_chars_to_translate(todo_filepath)
-        account_chars_stats = deepl_translator.get_character_usage_info()
-        nb_chars_left_on_deepl_account = account_chars_stats.limit - account_chars_stats.count
+        if config.translatorEngine == "deepl":
+            account_chars_stats = deepl_translator.get_character_usage_info()
+            nb_chars_left_on_deepl_account = account_chars_stats.limit - account_chars_stats.count
+        else:
+            nb_chars_left_on_deepl_account = -1
 
         if nb_chars_to_translate == 0:
             print(
@@ -64,7 +68,7 @@ def main():
         functions.clean_srt(todo_filepath)
         nb_chars_to_translate = functions.count_chars_to_translate(todo_filepath)
 
-        if nb_chars_to_translate > nb_chars_left_on_deepl_account:
+        if nb_chars_left_on_deepl_account != -1 and nb_chars_to_translate > nb_chars_left_on_deepl_account:
             print(
                 colorama.Fore.LIGHTRED_EX + "Skip file " +
                 colorama.Fore.LIGHTBLUE_EX + "{}".format(todo_filepath) +
@@ -106,7 +110,7 @@ def main():
             else:
                 done_filepath = Path(config.donePath + "/" + todo_filepath.stem + todo_filepath.suffix)
 
-            # translation is done, move processed file to the done folder
+            # translation is done, move the processed file to the done folder
             end = datetime.datetime.now()
             elapsed = end - start
             print(
@@ -121,7 +125,8 @@ def main():
             Path(todo_filepath).rename(done_filepath)
             current_file += 1
 
-    deepl_translator.get_best_api_key(True)
+    if config.translatorEngine == "deepl":
+        deepl_translator.get_best_api_key(True)
 
     # exit program
     colorama.deinit()
@@ -129,6 +134,8 @@ def main():
 
 
 def translate_srt_in_packets(todo_filepath, result_file):
+    detected_source_lang = "en"
+
     # split technical info (sequence, timecode) and subtitles text
     result = functions.split_srt(todo_filepath)
 
@@ -136,7 +143,7 @@ def translate_srt_in_packets(todo_filepath, result_file):
     current_index_subtitle = 0
     subtitles_translated_as_str = ""
 
-    # subtitles are concatenate, removing line feed to preserve context and translate by packet (to not reach deepl limit per api call)
+    # subtitles are concatenated, removing line feed to preserve context and translate by packet (to not reach deepl limit per api call)
     # functions.subtitle_separator is used to keep sequence and subtitle line separation, mandatory to rebuild the final SRT file
     while current_index_subtitle + functions.packets_size < nb_subtitles:
         functions.progressbar(current_index_subtitle, nb_subtitles)
@@ -144,17 +151,26 @@ def translate_srt_in_packets(todo_filepath, result_file):
         # merge subtitles items by packets_size
         subtitles_to_translate_as_str = ''.join(result[1][current_index_subtitle:current_index_subtitle + functions.packets_size])
 
-        # translate subtitles packet with deepl
-        translate_result = deepl_translator.translate_text(subtitles_to_translate_as_str)
-        subtitles_translated_as_str += translate_result.text
+        # translate subtitles packet
+        if config.translatorEngine == "deepl":
+            translate_result = deepl_translator.translate_text(subtitles_to_translate_as_str)
+            subtitles_translated_as_str += translate_result.text
+        else:
+            subtitles_translated_as_str += lmstudio_translator.translate_text(subtitles_to_translate_as_str)
 
         current_index_subtitle += functions.packets_size
 
     # process the last packet
     functions.progressbar(current_index_subtitle, nb_subtitles)
     subtitles_to_translate_as_str = ''.join(result[1][current_index_subtitle:])
-    translate_result = deepl_translator.translate_text(subtitles_to_translate_as_str)
-    subtitles_translated_as_str += translate_result.text
+
+    if config.translatorEngine == "deepl":
+        translate_result = deepl_translator.translate_text(subtitles_to_translate_as_str)
+        subtitles_translated_as_str += translate_result.text
+        detected_source_lang = translate_result.detected_source_lang
+    else:
+        subtitles_translated_as_str += lmstudio_translator.translate_text(subtitles_to_translate_as_str)
+
     functions.progressbar(nb_subtitles, nb_subtitles)  # 100%
 
     # rebuild subtitles arrays using functions.subtitle_separator delimiter
@@ -163,10 +179,10 @@ def translate_srt_in_packets(todo_filepath, result_file):
     # fix some punctuation anomaly caused by translation
     subtitles_translated = functions.fix_anomaly(subtitles_translated)
 
-    # generate translated SRT file with technical info (sequence, timecode) and translated subtitles
+    # generate a translated SRT file with technical info (sequence, timecode) and translated subtitles
     functions.merge_srt(result_file, result[0], subtitles_translated)
 
-    return translate_result.detected_source_lang
+    return detected_source_lang
 
 
 if __name__ == "__main__":

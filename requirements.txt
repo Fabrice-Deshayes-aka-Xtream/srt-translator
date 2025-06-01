@@ -2,3 +2,4 @@ deepl
 requests
 pathlib
 colorama
+lmstudio

@@ -3,7 +3,10 @@ import sys
 import config
 
 subtitle_separator = "<XTR/>"
-packets_size = 1000
+if config.translatorEngine == "deepl":
+    packets_size = 1000
+else:
+    packets_size = 400
 
 
 def progressbar(count_value, total, suffix=''):
