@@ -2,8 +2,8 @@ import re
 import sys
 import config
 
-subtitle_separator = "<XTR/>"
-packets_size = 1000
+SUBTITLES_SEPARATOR = "<XTR/>"
+PACKET_SIZE = 1000
 
 
 def progressbar(count_value, total, suffix=''):
@@ -63,11 +63,9 @@ def clean_sentence(sentence=""):
     # Replace multiple consecutive spaces with a single space
     sentence = re.sub(" {1,}", " ", sentence)
 
-    # Remove subtitle_separator in subtitles as we used it as separator
-    # sentence = sentence.replace(subtitle_separator, '')
-
-    # replace line feed \n with subtitle_separator tag
-    sentence = re.sub(r'\n', subtitle_separator, sentence)
+    # replace line feed \n with SUBTITLES
+    #_SEPARATOR tag
+    sentence = re.sub(r'\n', SUBTITLES_SEPARATOR, sentence)
 
     return sentence  # Return the cleaned sentence
 
@@ -82,6 +80,10 @@ def clean_srt(srt_file: str):
     with open(config.words_removal_file_path, 'r', encoding='utf-8') as f:
         words_to_remove = [line.strip() for line in f if line.strip() and not line.startswith('#') and not line == ""]
 
+    # If no words to remove, return early
+    if not words_to_remove:
+        return
+    
     # build a case-insensitive pattern for matching words/sentences to remove
     words_pattern = re.compile(r'\b(?:' + '|'.join(map(re.escape, words_to_remove)) + r')\b', re.IGNORECASE)
 
@@ -134,7 +136,7 @@ def split_srt(srt_file):
                 current_index += 1  # Move the index forward
 
             current_index += 1  # Move the index forward to skip the empty line between subtitles
-            subtitles.append(subtitle_separator)  # Append an empty string to indicate the end of this subtitle
+            subtitles.append(SUBTITLES_SEPARATOR)  # Append an empty string to indicate the end of this subtitle
 
     return technical_info, subtitles  # Return the collected technical info and cleaned subtitles
 

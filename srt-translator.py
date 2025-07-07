@@ -137,18 +137,18 @@ def translate_srt_in_packets(todo_filepath, result_file):
     subtitles_translated_as_str = ""
 
     # subtitles are concatenate, removing line feed to preserve context and translate by packet (to not reach deepl limit per api call)
-    # functions.subtitle_separator is used to keep sequence and subtitle line separation, mandatory to rebuild the final SRT file
-    while current_index_subtitle + functions.packets_size < nb_subtitles:
+    # functions.SUBTITLES_SEPARATOR is used to keep sequence and subtitle line separation, mandatory to rebuild the final SRT file
+    while current_index_subtitle + functions.PACKET_SIZE < nb_subtitles:
         functions.progressbar(current_index_subtitle, nb_subtitles)
 
-        # merge subtitles items by packets_size
-        subtitles_to_translate_as_str = ''.join(result[1][current_index_subtitle:current_index_subtitle + functions.packets_size])
+        # merge subtitles items by PACKET_SIZE
+        subtitles_to_translate_as_str = ''.join(result[1][current_index_subtitle:current_index_subtitle + functions.PACKET_SIZE])
 
         # translate subtitles packet with deepl
         translate_result = deepl_translator.translate_text(subtitles_to_translate_as_str)
         subtitles_translated_as_str += translate_result.text
 
-        current_index_subtitle += functions.packets_size
+        current_index_subtitle += functions.PACKET_SIZE
 
     # process the last packet
     functions.progressbar(current_index_subtitle, nb_subtitles)
@@ -157,8 +157,8 @@ def translate_srt_in_packets(todo_filepath, result_file):
     subtitles_translated_as_str += translate_result.text
     functions.progressbar(nb_subtitles, nb_subtitles)  # 100%
 
-    # rebuild subtitles arrays using functions.subtitle_separator delimiter
-    subtitles_translated = subtitles_translated_as_str.split(functions.subtitle_separator)
+    # rebuild subtitles arrays using functions.SUBTITLES_SEPARATOR delimiter
+    subtitles_translated = subtitles_translated_as_str.split(functions.SUBTITLES_SEPARATOR)
 
     # fix some punctuation anomaly caused by translation
     subtitles_translated = functions.fix_anomaly(subtitles_translated)
