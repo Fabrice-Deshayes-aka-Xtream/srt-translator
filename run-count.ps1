@@ -1,4 +1,30 @@
-conda activate srt-translator
+# Run script for counting characters in SRT files using the srt-translator environment
+
+# Check if conda is installed
+if (-not (Get-Command conda -ErrorAction SilentlyContinue)) {
+    Write-Host "Conda is not installed. Please install Anaconda or Miniconda first." -ForegroundColor Red
+    exit 1
+}
+
+# Define the environment name
+$envName = "srt-translator"
+
+# Check if the environment exists
+$envList = conda env list | Select-String $envName
+if (-not $envList) {
+    Write-Host "The environment '$envName' does not exist. Please run setup.ps1 first." -ForegroundColor Red
+    exit 1
+}
+
+# Activate the conda environment
+conda activate $envName
+
+# Run the Python script
 python srt-count-chars.py
-Write-Host -NoNewLine 'Press any key to continue...' -foregroundcolor "Yellow"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Error running srt-count-chars.py." -ForegroundColor Red
+}
+
+# Wait for user input before closing
+Write-Host -NoNewLine 'Press any key to continue...' -ForegroundColor Yellow
 $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
