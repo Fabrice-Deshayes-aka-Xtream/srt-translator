@@ -81,5 +81,6 @@ def translate_text(text_to_translate: str):
         target_lang=config.targetLang,
         formality=config.formality,
         tag_handling="xml",
+        tag_handling_version="v2",
         split_sentences='nonewlines'
     )
