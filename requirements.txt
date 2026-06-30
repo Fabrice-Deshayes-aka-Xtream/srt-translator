@@ -1,4 +1,4 @@
-deepl
-requests
-pathlib
-colorama
+deepl==1.30.0
+requests==2.34.2
+pathlib==1.0.1
+colorama==0.4.6
