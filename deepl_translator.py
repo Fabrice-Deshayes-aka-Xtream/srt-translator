@@ -1,12 +1,9 @@
-import time
-
 import config
 import os
 import deepl
 import colorama
 
 path_to_deepl_apikey = "deepl_apikey.txt"
-
 
 def get_character_usage_info(apikey=None):
     translator = init_translator(apikey)
@@ -71,7 +68,7 @@ def init_translator(apikey=None):
     return deepl.Translator(apikey)
 
 
-def translate_text(text_to_translate):
+def translate_text(text_to_translate: str):
     translator = init_translator()
 
     # uncomment for tests

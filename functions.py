@@ -1,3 +1,4 @@
+import html
 import re
 import sys
 import config
@@ -62,6 +63,9 @@ def clean_sentence(sentence=""):
 
     # Replace multiple consecutive spaces with a single space
     sentence = re.sub(" {1,}", " ", sentence)
+
+    # Ensure no XML special chars will crash deepl (like &)
+    sentence: str = html.escape(sentence)
 
     # replace line feed \n with SUBTITLES
     #_SEPARATOR tag
